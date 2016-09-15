@@ -22,6 +22,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+var db = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: 'localhost',
+    database: 'carts',
+    user: 'root',
+    password: '043789124'
+  }
+})
+
+app.use((req, res, next) => {
+  req.db = db;
+  next();
+})
+
 app.use('/', routes);
 app.use('/users', users);
 
