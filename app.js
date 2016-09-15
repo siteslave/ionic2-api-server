@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var cors = require('cors');
+
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -22,6 +25,23 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors());
+
+var db = require('knex')({
+  client: 'mysql',
+  connection: {
+    host: 'localhost',
+    database: 'carts',
+    user: 'root',
+    password: '043789124'
+  }
+})
+
+app.use((req, res, next) => {
+  req.db = db;
+  next();
+})
+
 app.use('/', routes);
 app.use('/users', users);
 
@@ -37,23 +57,19 @@ app.use(function(req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
+  app.use(function (err, req, res, next) {
+    console.log(err)
     res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
+    res.send({ok: false, msg: err})
   });
 }
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
+  console.log(err)
   res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
-  });
+  res.send({ok: false, msg: err})
 });
 
 
