@@ -10,10 +10,9 @@ router.post('/login', (req, res, next) => {
   console.log(req.body)
   let username = req.body.username;
   let password = req.body.password;
-
   let encryptedPass = crypto.createHash('md5').update(password).digest('hex');
 
-  let sql = db('users')
+  db('users')
     .where({
       username: username,
       password: encryptedPass
@@ -29,8 +28,6 @@ router.post('/login', (req, res, next) => {
       console.log(err)
       res.send({ ok: false, msg: err })
     });
-  
-
 })
 
 module.exports = router;
