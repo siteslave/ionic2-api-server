@@ -25,9 +25,6 @@ router.post('/login', (req, res, next) => {
         let token = jwt.sign({username: username}, secretKey, {
           expiresIn: "2 days"
         })
-
-        console.log(token);
-
         res.send({ ok: true, token: token })
       } else {
         res.send({ ok: false, msg: 'Invalid Username/Password!' })
